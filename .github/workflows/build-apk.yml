@@ -42,7 +42,7 @@ jobs:
 
       - name: 7. Patch Android Back Button & App Name & Fullscreen Theme
         run: |
-          node scripts/configure-android-native.mjs
+          node configure-android-native.mjs
 
       - name: 8. Build Installable APK (Gradle assembleDebug)
         working-directory: ./android
