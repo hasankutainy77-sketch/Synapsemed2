@@ -4,7 +4,7 @@
   "description": "synapsemed - Offline Medical Simulators Android App",
   "private": true,
   "scripts": {
-    "prepare-offline": "node scripts/bundle-offline-assets.mjs",
+    "prepare-offline": "node bundle-offline-assets.mjs",
     "sync": "npx cap sync android"
   },
   "dependencies": {
