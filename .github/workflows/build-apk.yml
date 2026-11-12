@@ -1,0 +1,87 @@
+name: Build Android APK (synapsemed)
+
+on:
+  push:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 3. Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 4. Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: 5. Install Dependencies
+        run: |
+          npm install
+
+      - name: 6. Prepare Web Assets
+        run: |
+          mkdir -p www
+
+          cp index.html www/
+          cp clinical-sim.html www/
+          cp appendectomy-3d.html www/
+          cp simulators.json www/
+
+          # نسخ المحاكيات الإضافية إن كانت موجودة
+          for file in appendectomy-sim.html normal-delivery-sim.html pneumothorax-sim.html; do
+            if [ -f "$file" ]; then
+              cp "$file" www/
+            fi
+          done
+
+          echo "Web assets copied successfully"
+
+      - name: 7. Bundle Three.js Offline
+        run: |
+          npm run prepare-offline
+
+      - name: 8. Create & Sync Capacitor Android
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+
+          npx cap sync android
+
+      - name: 9. Generate Android Assets
+        run: |
+          npx @capacitor/assets generate --android
+
+      - name: 10. Patch Android Native Configuration
+        run: |
+          node configure-android-native.mjs
+
+      - name: 11. Build APK
+        working-directory: ./android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: 12. Prepare APK
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk ./synapsemed.apk
+
+      - name: 13. Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: synapsemed-APK
+          path: ./synapsemed.apk
+          if-no-files-found: error
