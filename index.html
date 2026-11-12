@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>synapsemed</title>
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-header: rgba(255, 255, 255, 0.95);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-soft: #e0f2fe;
+      --border-color: #e2e8f0;
+      --danger: #dc2626;
+      --danger-hover: #b91c1c;
+      --danger-soft: #fee2e2;
+      --success: #16a34a;
+      --success-soft: rgba(22, 163, 74, 0.14);
+      --gold: #f59e0b;
+      --gold-soft: rgba(245, 158, 11, 0.16);
+      --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.09);
+      --radius: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #060d1d;
+        --bg-card: #111e36;
+        --bg-header: rgba(6, 13, 29, 0.95);
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --accent: #38bdf8;
+        --accent-hover: #0284c7;
+        --accent-soft: rgba(56, 189, 248, 0.16);
+        --border-color: #1e3256;
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-soft: rgba(239, 68, 68, 0.18);
+        --success: #22c55e;
+        --success-soft: rgba(34, 197, 94, 0.2);
+        --gold: #fbbf24;
+        --gold-soft: rgba(251, 191, 36, 0.2);
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+        --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic', Tahoma, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-bottom: 76px;
+    }
+
+    /* Sticky Top Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 25;
+      background: var(--bg-header);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: calc(env(safe-area-inset-top, 10px) + 10px) 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 1.22rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .brand-text p {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 11px;
+      border: none;
+      background: #0284c7;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-add:active {
+      transform: scale(0.96);
+      background: #0369a1;
+    }
+
+    .btn-update {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-update.visible {
+      display: inline-flex;
+    }
+
+    .btn-update.has-update {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.45);
+      animation: pulseRed 1.8s infinite;
+    }
+
+    @keyframes pulseRed {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55); }
+      50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Feature 1: Progress Tracker Bar */
+    .progress-banner {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .progress-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--border-color);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0284c7, #22c55e);
+      transition: width 0.3s ease;
+    }
+
+    .progress-pct {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--success);
+      min-width: 36px;
+      text-align: left;
+      direction: ltr;
+    }
+
+    /* Quick Search Bar */
+    .search-bar-wrap {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 13px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 38px 9px 36px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+      user-select: text;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      left: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: var(--border-color);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .search-clear-btn.visible {
+      display: inline-flex;
+    }
+
+    /* Category Filter Chips Bar */
+    .categories-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      scrollbar-width: none;
+    }
+
+    .categories-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      flex-shrink: 0;
+    }
+
+    .cat-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.28);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .cat-chip.active {
+        color: #060d1d;
+      }
+    }
+
+    .cat-count {
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.12);
+    }
+
+    .cat-chip.active .cat-count {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .status-toast {
+      max-width: 760px;
+      width: calc(100% - 32px);
+      margin: 12px auto 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--border-color);
+    }
+
+    .status-toast.show {
+      display: flex;
+    }
+
+    /* Main Scrollable List of Cards */
+    .cards-list {
+      padding: 16px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 42px 20px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+
+    .sim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      position: relative;
+    }
+
+    .sim-card.completed-card {
+      border-color: rgba(34, 197, 94, 0.45);
+    }
+
+    .sim-card:hover, .sim-card:active {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+
+    .sim-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .sim-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sim-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .sim-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .sim-category {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .sim-note-indicator {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--gold-soft);
+      color: var(--gold);
+    }
+
+    .card-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    /* Feature 2: Favorite Star Button */
+    .btn-fav-card {
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-fav-card.active {
+      background: var(--gold-soft);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* Feature 1: Completed Check Button */
+    .btn-done-card {
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-done-card.active {
+      background: var(--success-soft);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .btn-edit-card {
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-delete-card {
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .sim-title {
+      font-size: 1.03rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .sim-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .disclaimer-bar {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 15;
+      background: var(--bg-header);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border-color);
+      padding: 10px 16px calc(env(safe-area-inset-bottom, 6px) + 8px);
+      text-align: center;
+      font-size: 0.77rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Full-Screen Simulator View & Floating Toolbar (Features 3 & 5) */
+    .simulator-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #000000;
+      display: none;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .simulator-overlay.active {
+      display: flex;
+    }
+
+    /* CSS Fallback Landscape rotation if device locks orientation */
+    .simulator-overlay.css-landscape .simulator-iframe {
+      width: 100vh;
+      height: 100vw;
+      transform: rotate(90deg) translateY(-100%);
+      transform-origin: top left;
+    }
+
+    .simulator-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #0f172a;
+      flex: 1;
+    }
+
+    .sim-floating-toolbar {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 10px) + 10px);
+      right: 12px;
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .floating-tool-btn {
+      background: rgba(15, 23, 42, 0.82);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .floating-tool-btn.active-tool {
+      background: #0284c7;
+      border-color: #38bdf8;
+    }
+
+    .floating-tool-btn.done-tool {
+      background: rgba(22, 163, 74, 0.9);
+      border-color: #4ade80;
+    }
+
+    /* Feature 3: Floating Clinical Notes Drawer inside Simulator */
+    .notes-drawer {
+      position: fixed;
+      bottom: 20px;
+      left: 16px;
+      right: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+      z-index: 120;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid #38bdf8;
+      border-radius: 16px;
+      padding: 14px;
+      color: #f8fafc;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+    }
+
+    .notes-drawer.open {
+      display: flex;
+    }
+
+    .notes-drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 110px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #090d16;
+      color: #f8fafc;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      resize: vertical;
+      user-select: text;
+    }
+
+    .notes-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: #94a3b8;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 95;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      max-width: 480px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    .modal-card h2 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+
+    .modal-card p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .modal-input, .modal-select {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.84rem;
+      margin-bottom: 10px;
+      user-select: text;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 85px 1fr;
+      gap: 8px;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 14px 0;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary, .btn-secondary, .btn-danger {
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #0284c7;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Home Screen -->
+  <div class="app-container" id="homeScreen">
+    <header class="app-header">
+      <div class="header-top-row">
+        <div class="brand-group">
+          <img src="assets/logo.png" alt="synapsemed" class="brand-logo-img" />
+          <div class="brand-text">
+            <h1>synapsemed</h1>
+            <p id="simCountSubtitle">منصة المحاكاة السريرية والجراحية التفاعلية</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="updateBtn" class="btn-update" type="button" title="تحديث المحاكيات">
+            <span>🔄</span>
+            <span id="updateBtnLabel">تحديث</span>
+          </button>
+          <button id="openAddModalBtn" class="btn-add" type="button">
+            <span>➕</span>
+            <span>إضافة محاكي</span>
+          </button>
+          <button id="openSettingsModalBtn" class="btn-icon" type="button" title="الإعدادات واستعادة الافتراضيات">⚙️</button>
+        </div>
+      </div>
+
+      <!-- Feature 1: Study Progress Tracker Bar -->
+      <div class="progress-banner">
+        <div class="progress-info">
+          <span>🏆 إنجاز التدريب:</span>
+          <span id="progressCountLabel">0 من 5 مكتمل</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div id="progressFillBar" class="progress-fill"></div>
+        </div>
+        <div id="progressPctLabel" class="progress-pct">0%</div>
+      </div>
+
+      <!-- Quick Instant Search Bar -->
+      <div class="search-bar-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input
+          id="searchInput"
+          type="search"
+          class="search-input"
+          placeholder="ابحث عن محاكي بالاسم أو الكلمات المفتاحية (مثل: زائدة، ولادة، صدر، ألم)..."
+          autocomplete="off"
+        />
+        <button id="clearSearchBtn" type="button" class="search-clear-btn" title="مسح البحث">✕</button>
+      </div>
+
+      <!-- Categories Filter Bar (Includes ⭐ المفضلة) -->
+      <nav id="categoriesBar" class="categories-bar" aria-label="تصنيفات المحاكيات الطبية"></nav>
+    </header>
+
+    <div id="statusToast" class="status-toast" role="status"></div>
+
+    <main id="cardsList" class="cards-list" aria-label="قائمة المحاكيات الطبية"></main>
+
+    <footer class="disclaimer-bar">
+      ⚠️ للاستخدام التعليمي والتدريبي فقط، ولا يُعد بديلاً عن التدريب السريري المباشر أو البروتوكولات الطبية المعتمدة.
+    </footer>
+  </div>
+
+  <!-- Full-Screen Simulator View (with Back, Rotate Landscape, Notes, and Complete buttons) -->
+  <div id="simulatorOverlay" class="simulator-overlay" aria-hidden="true">
+    <div class="sim-floating-toolbar">
+      <button id="floatingBackBtn" class="floating-tool-btn" type="button">
+        <span>✕</span>
+        <span>رجوع</span>
+      </button>
+      <button id="floatingRotateBtn" class="floating-tool-btn" type="button" title="تدوير الشاشة أفقياً/عمودياً">
+        <span>🔄</span>
+        <span id="rotateBtnLabel">عرض أفقي</span>
+      </button>
+      <button id="floatingNotesBtn" class="floating-tool-btn" type="button" title="ملاحظاتي السريرية على هذه الحالة">
+        <span>📝</span>
+        <span>ملاحظاتي</span>
+      </button>
+      <button id="floatingDoneBtn" class="floating-tool-btn" type="button" title="تحديد المحاكي كمكتمل">
+        <span>✓</span>
+        <span id="floatingDoneLabel">تحديد كمكتمل</span>
+      </button>
+    </div>
+
+    <!-- Feature 3: Floating Clinical Notes Pad inside Simulator -->
+    <div id="notesDrawer" class="notes-drawer">
+      <div class="notes-drawer-header">
+        <span id="notesDrawerTitle">📝 ملاحظاتي السريرية</span>
+        <button id="closeNotesDrawerBtn" type="button" class="btn-secondary" style="padding:3px 10px;color:#fff;border-color:#475569;">إغلاق</button>
+      </div>
+      <textarea
+        id="simNotesTextarea"
+        class="notes-textarea"
+        placeholder="اكتب ملاحظاتك السريرية، النقاط الذهبية، أو الجرعات الدوائية الخاصة بهذا المحاكي (تُحفظ تلقائياً)..."
+      ></textarea>
+      <div class="notes-footer">
+        <span id="notesAutoSaveStatus">✓ يتم الحفظ تلقائياً على جهازك</span>
+        <button id="clearSimNoteBtn" type="button" style="background:none;border:none;color:#f87171;cursor:pointer;font-weight:700;">مسح الملاحظة</button>
+      </div>
+    </div>
+
+    <iframe id="simulatorFrame" class="simulator-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+  </div>
+
+  <!-- Add / Edit Simulator Modal -->
+  <div id="addSimModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h2 id="simModalHeading">➕ إضافة واستيراد محاكي جديد</h2>
+      <p id="simModalSubtext">اختر ملف <code>.html</code> من جهازك وحدد التصنيف الطبي المناسب ليُحفظ داخل التطبيق ويعمل بدون إنترنت:</p>
+
+      <div id="filePickerGroup">
+        <label class="field-label" for="htmlFileInput">1. اختيار ملف المحاكي (.html)</label>
+        <input id="htmlFileInput" type="file" accept=".html,.htm" class="modal-input" />
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="field-label" for="simIconInput">الأيقونة</label>
+          <input id="simIconInput" type="text" class="modal-input" value="🩺" style="text-align:center;font-size:1.1rem;" />
+        </div>
+        <div>
+          <label class="field-label" for="simCategorySelect">التصنيف الطبي</label>
+          <select id="simCategorySelect" class="modal-select">
+            <option value="عمليات جراحية">🔪 عمليات جراحية</option>
+            <option value="قصة سريرية وتشخيص">🩺 قصة سريرية وتشخيص</option>
+            <option value="طوارئ وإنعاش">🚨 طوارئ وإنعاش</option>
+            <option value="نسائية وتوليد">👶 نسائية وتوليد</option>
+            <option value="مهارات وإجراءات سريرية">💉 مهارات وإجراءات سريرية</option>
+            <option value="تشريح وفيزيولوجيا 3D">🧊 تشريح وفيزيولوجيا 3D</option>
+            <option value="__custom__">✨ تصنيف جديد مخصص...</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="customCategoryWrap" style="display:none;">
+        <label class="field-label" for="customCategoryInput">اسم التصنيف الجديد</label>
+        <input id="customCategoryInput" type="text" class="modal-input" placeholder="مثال: قلبية وتخطيط ECG أو أطفال" />
+      </div>
+
+      <label class="field-label" for="simTitleInput">عنوان المحاكي</label>
+      <input id="simTitleInput" type="text" class="modal-input" placeholder="مثال: تدبير الصدمة التأقية" />
+
+      <label class="field-label" for="simDescInput">وصف مختصر يظهر على البطاقة</label>
+      <input id="simDescInput" type="text" class="modal-input" placeholder="وصف مختصر للمحاكي..." />
+
+      <div class="modal-actions">
+        <button id="closeAddModalBtn" class="btn-secondary" type="button">إلغاء</button>
+        <button id="confirmAddSimBtn" class="btn-primary" type="button">حفظ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteConfirmModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h2 style="color:var(--danger);">🗑️ تأكيد حذف المحاكي</h2>
+      <p id="deleteModalText">هل أنت متأكد من حذف هذا المحاكي من القائمة؟</p>
+      <div class="modal-actions">
+        <button id="cancelDeleteBtn" class="btn-secondary" type="button">تراجع</button>
+        <button id="confirmDeleteBtn" class="btn-danger" type="button">نعم، احذف المحاكي</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings & Restore Deleted Bundled Simulators Modal -->
+  <div id="settingsModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h2>⚙️ إعدادات التحديث وإدارة المحاكيات</h2>
+      <p>يمكنك ضبط رابط التحديث السحابي (GitHub Pages) أو استعادة المحاكيات الافتراضية وإلغاء التعديلات:</p>
+
+      <label class="field-label" for="remoteUrlInput">رابط ملف simulators.json عن بُعد (GitHub Pages)</label>
+      <input id="remoteUrlInput" type="url" class="modal-input" dir="ltr" placeholder="https://username.github.io/medsim/simulators.json" />
+
+      <div class="section-divider"></div>
+
+      <label class="field-label">استعادة المحاكيات الأصلية المحذوفة أو المعدلة</label>
+      <p style="margin-bottom:8px;">إذا حذفت أو عدّلت أحد المحاكيات الخمسة المدمجة مع التطبيق، اضغط هنا لاستعادتها لحالتها الأصلية:</p>
+      <button id="restoreDeletedBundledBtn" class="btn-secondary" type="button" style="width:100%;">♻️ استعادة المحاكيات المدمجة الأصلية</button>
+
+      <div class="modal-actions">
+        <button id="closeSettingsBtn" class="btn-secondary" type="button">إغلاق</button>
+        <button id="saveSettingsBtn" class="btn-primary" type="button">حفظ وفحص التحديث</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEYS = {
+        MANIFEST: 'synapsemed_cached_manifest_v1',
+        OWNER_IMPORTED: 'synapsemed_owner_imported_list_v1',
+        META_OVERRIDES: 'synapsemed_meta_overrides_v1',
+        DELETED_IDS: 'synapsemed_deleted_ids_v1',
+        FAVORITES: 'synapsemed_favorites_v1',
+        COMPLETED: 'synapsemed_completed_v1',
+        NOTES_PREFIX: 'synapsemed_note_',
+        REMOTE_URL: 'synapsemed_remote_config_url_v1',
+        HTML_PREFIX: 'synapsemed_cached_html_'
+      };
+
+      const DEFAULT_CATEGORIES = [
+        { id: 'all', title: 'الكل', icon: '📚' },
+        { id: '__favorites__', title: 'المفضلة', icon: '⭐' },
+        { id: 'عمليات جراحية', title: 'عمليات جراحية', icon: '🔪' },
+        { id: 'قصة سريرية وتشخيص', title: 'قصة سريرية وتشخيص', icon: '🩺' },
+        { id: 'طوارئ وإنعاش', title: 'طوارئ وإنعاش', icon: '🚨' },
+        { id: 'نسائية وتوليد', title: 'نسائية وتوليد', icon: '👶' },
+        { id: 'مهارات وإجراءات سريرية', title: 'مهارات وإجراءات سريرية', icon: '💉' },
+        { id: 'تشريح وفيزيولوجيا 3D', title: 'تشريح وفيزيولوجيا 3D', icon: '🧊' }
+      ];
+
+      const cardsListEl = document.getElementById('cardsList');
+      const categoriesBarEl = document.getElementById('categoriesBar');
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const simCountSubtitle = document.getElementById('simCountSubtitle');
+      const progressCountLabel = document.getElementById('progressCountLabel');
+      const progressFillBar = document.getElementById('progressFillBar');
+      const progressPctLabel = document.getElementById('progressPctLabel');
+      const updateBtn = document.getElementById('updateBtn');
+      const updateBtnLabel = document.getElementById('updateBtnLabel');
+      const statusToast = document.getElementById('statusToast');
+
+      // Simulator Fullscreen Overlay & Toolbar Elements
+      const simulatorOverlay = document.getElementById('simulatorOverlay');
+      const simulatorFrame = document.getElementById('simulatorFrame');
+      const floatingBackBtn = document.getElementById('floatingBackBtn');
+      const floatingRotateBtn = document.getElementById('floatingRotateBtn');
+      const rotateBtnLabel = document.getElementById('rotateBtnLabel');
+      const floatingNotesBtn = document.getElementById('floatingNotesBtn');
+      const floatingDoneBtn = document.getElementById('floatingDoneBtn');
+      const floatingDoneLabel = document.getElementById('floatingDoneLabel');
+      const notesDrawer = document.getElementById('notesDrawer');
+      const notesDrawerTitle = document.getElementById('notesDrawerTitle');
+      const closeNotesDrawerBtn = document.getElementById('closeNotesDrawerBtn');
+      const simNotesTextarea = document.getElementById('simNotesTextarea');
+      const clearSimNoteBtn = document.getElementById('clearSimNoteBtn');
+
+      // Add / Edit Modal Elements
+      const openAddModalBtn = document.getElementById('openAddModalBtn');
+      const addSimModal = document.getElementById('addSimModal');
+      const simModalHeading = document.getElementById('simModalHeading');
+      const simModalSubtext = document.getElementById('simModalSubtext');
+      const filePickerGroup = document.getElementById('filePickerGroup');
+      const htmlFileInput = document.getElementById('htmlFileInput');
+      const simIconInput = document.getElementById('simIconInput');
+      const simCategorySelect = document.getElementById('simCategorySelect');
+      const customCategoryWrap = document.getElementById('customCategoryWrap');
+      const customCategoryInput = document.getElementById('customCategoryInput');
+      const simTitleInput = document.getElementById('simTitleInput');
+      const simDescInput = document.getElementById('simDescInput');
+      const closeAddModalBtn = document.getElementById('closeAddModalBtn');
+      const confirmAddSimBtn = document.getElementById('confirmAddSimBtn');
+
+      // Delete Modal Elements
+      const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+      const deleteModalText = document.getElementById('deleteModalText');
+      const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+      // Settings Modal Elements
+      const openSettingsModalBtn = document.getElementById('openSettingsModalBtn');
+      const settingsModal = document.getElementById('settingsModal');
+      const remoteUrlInput = document.getElementById('remoteUrlInput');
+      const restoreDeletedBundledBtn = document.getElementById('restoreDeletedBundledBtn');
+      const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+      const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+      let bundledManifest = null;
+      let activeSimulators = [];
+      let selectedCategory = 'all';
+      let searchQuery = '';
+      let pendingNewSimulators = [];
+      let pendingRemoteManifest = null;
+      let pendingBaseUrl = '';
+      let isSimulatorOpen = false;
+      let currentOpenSim = null;
+      let isLandscapeMode = false;
+      let selectedFileContent = '';
+      let selectedFileName = '';
+      let editingSimulator = null;
+      let simTargetForDelete = null;
+
+      function normalizeArabic(str) {
+        return String(str || '')
+          .toLowerCase()
+          .replace(/[أإآ]/g, 'ا')
+          .replace(/ة/g, 'ه')
+          .replace(/ى/g, 'ي')
+          .replace(/[ًٌٍَُِّْ]/g, '')
+          .trim();
+      }
+
+      function showToast(msg, durationMs = 4000) {
+        statusToast.textContent = msg;
+        statusToast.classList.add('show');
+        if (durationMs > 0) {
+          setTimeout(() => statusToast.classList.remove('show'), durationMs);
+        }
+      }
+
+      function getJsonList(key) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveJsonList(key, list) {
+        localStorage.setItem(key, JSON.stringify(list));
+      }
+
+      function getOwnerImportedList() { return getJsonList(STORAGE_KEYS.OWNER_IMPORTED); }
+      function saveOwnerImportedList(list) { saveJsonList(STORAGE_KEYS.OWNER_IMPORTED, list); }
+
+      function getDeletedIds() { return getJsonList(STORAGE_KEYS.DELETED_IDS); }
+      function saveDeletedIds(ids) { saveJsonList(STORAGE_KEYS.DELETED_IDS, ids); }
+
+      function getFavoritesSet() { return new Set(getJsonList(STORAGE_KEYS.FAVORITES)); }
+      function saveFavoritesSet(setObj) { saveJsonList(STORAGE_KEYS.FAVORITES, Array.from(setObj)); }
+
+      function getCompletedSet() { return new Set(getJsonList(STORAGE_KEYS.COMPLETED)); }
+      function saveCompletedSet(setObj) { saveJsonList(STORAGE_KEYS.COMPLETED, Array.from(setObj)); }
+
+      function getMetaOverrides() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEYS.META_OVERRIDES);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveMetaOverrides(overrides) {
+        localStorage.setItem(STORAGE_KEYS.META_OVERRIDES, JSON.stringify(overrides));
+      }
+
+      function getSimKey(sim) {
+        return sim.id || sim.file;
+      }
+
+      function getSimNote(sim) {
+        return localStorage.getItem(STORAGE_KEYS.NOTES_PREFIX + getSimKey(sim)) || '';
+      }
+
+      function setSimNote(sim, text) {
+        const k = STORAGE_KEYS.NOTES_PREFIX + getSimKey(sim);
+        if (text && text.trim()) {
+          localStorage.setItem(k, text);
+        } else {
+          localStorage.removeItem(k);
+        }
+      }
+
+      async function loadSimulatorsList() {
+        try {
+          const response = await fetch('simulators.json', { cache: 'no-store' });
+          bundledManifest = await response.json();
+        } catch (err) {
+          bundledManifest = { version: '1.1.0', remoteConfigUrl: '', simulators: [] };
+        }
+
+        const deletedSet = new Set(getDeletedIds());
+        const overrides = getMetaOverrides();
+        let mergedMap = new Map();
+
+        if (bundledManifest && Array.isArray(bundledManifest.simulators)) {
+          bundledManifest.simulators.forEach(item => {
+            const key = item.id || item.file;
+            if (!deletedSet.has(key) && !deletedSet.has(item.file)) {
+              const ov = overrides[key] || overrides[item.file] || {};
+              mergedMap.set(key, { ...item, ...ov, source: 'bundled' });
+            }
+          });
+        }
+
+        const cachedManifestRaw = localStorage.getItem(STORAGE_KEYS.MANIFEST);
+        if (cachedManifestRaw) {
+          try {
+            const cachedList = JSON.parse(cachedManifestRaw);
+            if (Array.isArray(cachedList)) {
+              cachedList.forEach(item => {
+                const key = item.id || item.file;
+                if (deletedSet.has(key) || deletedSet.has(item.file)) return;
+                const hasCachedHtml = !!localStorage.getItem(STORAGE_KEYS.HTML_PREFIX + item.file);
+                if (hasCachedHtml || !mergedMap.has(key)) {
+                  const ov = overrides[key] || overrides[item.file] || {};
+                  mergedMap.set(key, { ...item, ...ov, source: hasCachedHtml ? 'cached' : 'bundled' });
+                }
+              });
+            }
+          } catch (e) {}
+        }
+
+        const ownerList = getOwnerImportedList();
+        ownerList.forEach(item => {
+          const key = item.id || item.file;
+          if (deletedSet.has(key) || deletedSet.has(item.file)) return;
+          if (localStorage.getItem(STORAGE_KEYS.HTML_PREFIX + item.file)) {
+            const ov = overrides[key] || overrides[item.file] || {};
+            mergedMap.set(key, { ...item, ...ov, source: 'owner' });
+          }
+        });
+
+        activeSimulators = Array.from(mergedMap.values());
+        simCountSubtitle.textContent = `${activeSimulators.length} محاكيات طبية جاهزة للعمل بدون إنترنت`;
+        updateProgressUI();
+        renderCategoriesBar();
+        renderCards();
+      }
+
+      // Feature 1: Update Progress Bar
+      function updateProgressUI() {
+        const completedSet = getCompletedSet();
+        const total = activeSimulators.length;
+        const doneCount = activeSimulators.filter(s => completedSet.has(getSimKey(s))).length;
+        const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+
+        progressCountLabel.textContent = `${doneCount} من ${total} مكتمل`;
+        progressFillBar.style.width = `${pct}%`;
+        progressPctLabel.textContent = `${pct}%`;
+      }
+
+      function renderCategoriesBar() {
+        categoriesBarEl.innerHTML = '';
+        const favSet = getFavoritesSet();
+        const catMap = new Map();
+
+        DEFAULT_CATEGORIES.forEach(c => catMap.set(c.id, { ...c, count: 0 }));
+
+        activeSimulators.forEach(sim => {
+          const cat = sim.category || 'محاكاة طبية';
+          if (!catMap.has(cat)) {
+            catMap.set(cat, { id: cat, title: cat, icon: '📂', count: 0 });
+          }
+          catMap.get(cat).count += 1;
+          if (favSet.has(getSimKey(sim))) {
+            catMap.get('__favorites__').count += 1;
+          }
+        });
+
+        catMap.get('all').count = activeSimulators.length;
+
+        catMap.forEach((catObj) => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'cat-chip' + (selectedCategory === catObj.id ? ' active' : '');
+          chip.innerHTML = `
+            <span>${catObj.icon}</span>
+            <span>${catObj.title}</span>
+            <span class="cat-count">${catObj.count}</span>
+          `;
+          chip.addEventListener('click', () => {
+            selectedCategory = catObj.id;
+            renderCategoriesBar();
+            renderCards();
+          });
+          categoriesBarEl.appendChild(chip);
+        });
+      }
+
+      function renderCards() {
+        cardsListEl.innerHTML = '';
+        const normQuery = normalizeArabic(searchQuery);
+        const favSet = getFavoritesSet();
+        const completedSet = getCompletedSet();
+
+        const filtered = activeSimulators.filter(sim => {
+          const key = getSimKey(sim);
+          const matchesCat =
+            selectedCategory === 'all' ? true :
+            selectedCategory === '__favorites__' ? favSet.has(key) :
+            (sim.category || 'محاكاة طبية') === selectedCategory;
+
+          if (!matchesCat) return false;
+          if (!normQuery) return true;
+          const noteText = getSimNote(sim);
+          const haystack = normalizeArabic(`${sim.title} ${sim.description} ${sim.category} ${noteText}`);
+          return haystack.includes(normQuery);
+        });
+
+        if (filtered.length === 0) {
+          const emptyMsg = selectedCategory === '__favorites__'
+            ? 'لم تقم بإضافة أي محاكي إلى المفضلة (⭐) بعد.'
+            : 'لا توجد نتائج مطابقة للبحث أو التصنيف المحدد.';
+          cardsListEl.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size:2rem;margin-bottom:8px;">${selectedCategory === '__favorites__' ? '⭐' : '🔍'}</div>
+              <strong>${emptyMsg}</strong>
+              <p style="font-size:0.82rem;margin-top:6px;">اضغط على النجمة ⭐ في أي بطاقة لإضافتها للمفضلة، أو اختر تصنيف "الكل".</p>
+            </div>
+          `;
+          return;
+        }
+
+        filtered.forEach(sim => {
+          const key = getSimKey(sim);
+          const isFav = favSet.has(key);
+          const isDone = completedSet.has(key);
+          const hasNote = getSimNote(sim).trim().length > 0;
+
+          const card = document.createElement('article');
+          card.className = 'sim-card' + (isDone ? ' completed-card' : '');
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+
+          card.innerHTML = `
+            <div class="sim-icon-box" aria-hidden="true">${sim.icon || '🩺'}</div>
+            <div class="sim-content">
+              <div class="sim-meta-row">
+                <div class="sim-badges">
+                  <span class="sim-category">${sim.category || 'محاكاة طبية'}</span>
+                  ${hasNote ? '<span class="sim-note-indicator">📝 توجد ملاحظة</span>' : ''}
+                </div>
+                <div class="card-actions-group">
+                  <button type="button" class="btn-fav-card ${isFav ? 'active' : ''}" title="إضافة/إزالة من المفضلة">
+                    ${isFav ? '⭐' : '☆'}
+                  </button>
+                  <button type="button" class="btn-done-card ${isDone ? 'active' : ''}" title="تحديد كمكتمل">
+                    <span>✓</span>
+                    <span>${isDone ? 'مكتمل' : 'إنجاز'}</span>
+                  </button>
+                  <button type="button" class="btn-edit-card" title="تعديل بيانات البطاقة">
+                    <span>✏️</span>
+                    <span>تعديل</span>
+                  </button>
+                  <button type="button" class="btn-delete-card" title="حذف هذا المحاكي">
+                    <span>🗑️</span>
+                  </button>
+                </div>
+              </div>
+              <h2 class="sim-title">${sim.title}</h2>
+              <p class="sim-desc">${sim.description}</p>
+            </div>
+          `;
+
+          // Favorite toggle
+          card.querySelector('.btn-fav-card').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const set = getFavoritesSet();
+            if (set.has(key)) set.delete(key); else set.add(key);
+            saveFavoritesSet(set);
+            renderCategoriesBar();
+            renderCards();
+          });
+
+          // Completed toggle
+          card.querySelector('.btn-done-card').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const set = getCompletedSet();
+            if (set.has(key)) set.delete(key); else set.add(key);
+            saveCompletedSet(set);
+            updateProgressUI();
+            renderCards();
+          });
+
+          // Edit button
+          card.querySelector('.btn-edit-card').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEditModal(sim);
+          });
+
+          // Delete button
+          card.querySelector('.btn-delete-card').addEventListener('click', (e) => {
+            e.stopPropagation();
+            promptDeleteSimulator(sim);
+          });
+
+          card.addEventListener('click', () => openSimulator(sim));
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openSimulator(sim);
+            }
+          });
+
+          cardsListEl.appendChild(card);
+        });
+      }
+
+      // --- Instant Search Bar Listeners ---
+      searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value;
+        clearSearchBtn.classList.toggle('visible', searchQuery.trim().length > 0);
+        renderCards();
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchQuery = '';
+        clearSearchBtn.classList.remove('visible');
+        renderCards();
+        searchInput.focus();
+      });
+
+      // --- Add & Edit Simulator Modal Logic ---
+      simCategorySelect.addEventListener('change', () => {
+        customCategoryWrap.style.display = simCategorySelect.value === '__custom__' ? 'block' : 'none';
+      });
+
+      function setCategoryInModal(catName) {
+        const exists = Array.from(simCategorySelect.options).some(o => o.value === catName);
+        if (exists) {
+          simCategorySelect.value = catName;
+          customCategoryWrap.style.display = 'none';
+        } else {
+          simCategorySelect.value = '__custom__';
+          customCategoryWrap.style.display = 'block';
+          customCategoryInput.value = catName || '';
+        }
+      }
+
+      openAddModalBtn.addEventListener('click', () => {
+        editingSimulator = null;
+        simModalHeading.textContent = '➕ إضافة واستيراد محاكي جديد';
+        simModalSubtext.innerHTML = 'اختر ملف <code>.html</code> من جهازك وحدد التصنيف الطبي المناسب ليُحفظ داخل التطبيق ويعمل بدون إنترنت:';
+        filePickerGroup.style.display = 'block';
+        confirmAddSimBtn.textContent = '➕ حفظ المحاكي في التطبيق';
+
+        selectedFileContent = '';
+        selectedFileName = '';
+        htmlFileInput.value = '';
+        simIconInput.value = '🩺';
+        simTitleInput.value = '';
+        simDescInput.value = '';
+
+        if (selectedCategory !== 'all' && selectedCategory !== '__favorites__') {
+          setCategoryInModal(selectedCategory);
+        } else {
+          setCategoryInModal('عمليات جراحية');
+        }
+        addSimModal.classList.add('open');
+      });
+
+      function openEditModal(sim) {
+        editingSimulator = sim;
+        simModalHeading.textContent = '✏️ تعديل بيانات المحاكي';
+        simModalSubtext.textContent = 'عدّل عنوان المحاكي أو وصفه أو تصنيفه أو أيقونته مباشرة دون الحاجة لإعادة رفع الملف:';
+        filePickerGroup.style.display = 'none';
+        confirmAddSimBtn.textContent = '💾 حفظ التعديلات';
+
+        simIconInput.value = sim.icon || '🩺';
+        simTitleInput.value = sim.title || '';
+        simDescInput.value = sim.description || '';
+        setCategoryInModal(sim.category || 'عمليات جراحية');
+
+        addSimModal.classList.add('open');
+      }
+
+      closeAddModalBtn.addEventListener('click', () => {
+        addSimModal.classList.remove('open');
+      });
+
+      htmlFileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        selectedFileName = file.name;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          selectedFileContent = String(ev.target.result || '');
+          const doc = new DOMParser().parseFromString(selectedFileContent, 'text/html');
+          const extractedTitle = (doc.querySelector('title') && doc.querySelector('title').textContent.trim()) ||
+                                 (doc.querySelector('h1') && doc.querySelector('h1').textContent.trim()) ||
+                                 file.name.replace(/\.html?$/i, '');
+          simTitleInput.value = extractedTitle;
+          if (!simDescInput.value.trim()) {
+            simDescInput.value = `محاكاة تفاعلية: ${extractedTitle}`;
+          }
+        };
+        reader.readAsText(file, 'utf-8');
+      });
+
+      confirmAddSimBtn.addEventListener('click', async () => {
+        const title = simTitleInput.value.trim();
+        const desc = simDescInput.value.trim();
+        const icon = simIconInput.value.trim() || '🩺';
+        const category = simCategorySelect.value === '__custom__'
+          ? (customCategoryInput.value.trim() || 'محاكاة طبية')
+          : simCategorySelect.value;
+
+        if (editingSimulator) {
+          const key = getSimKey(editingSimulator);
+          const updatedTitle = title || editingSimulator.title;
+          const updatedDesc = desc || editingSimulator.description;
+
+          const overrides = getMetaOverrides();
+          overrides[key] = { title: updatedTitle, description: updatedDesc, icon, category };
+          if (editingSimulator.file) {
+            overrides[editingSimulator.file] = { title: updatedTitle, description: updatedDesc, icon, category };
+          }
+          saveMetaOverrides(overrides);
+
+          const ownerList = getOwnerImportedList().map(item => {
+            if (item.id === editingSimulator.id || item.file === editingSimulator.file) {
+              return { ...item, title: updatedTitle, description: updatedDesc, icon, category };
+            }
+            return item;
+          });
+          saveOwnerImportedList(ownerList);
+
+          editingSimulator = null;
+          addSimModal.classList.remove('open');
+          await loadSimulatorsList();
+          showToast(`✓ تم تحديث بيانات "${updatedTitle}" بنجاح!`);
+          return;
+        }
+
+        if (!selectedFileContent || !selectedFileName) {
+          alert('يرجى اختيار ملف HTML من جهازك أولاً.');
+          return;
+        }
+
+        const finalTitle = title || selectedFileName.replace(/\.html?$/i, '');
+        const finalDesc = desc || `محاكاة طبية تفاعلية (${finalTitle})`;
+        const simId = 'custom-' + Date.now();
+        const newSim = {
+          id: simId,
+          title: finalTitle,
+          description: finalDesc,
+          icon,
+          file: selectedFileName,
+          version: '1.0.0',
+          category
+        };
+
+        try {
+          localStorage.setItem(STORAGE_KEYS.HTML_PREFIX + selectedFileName, selectedFileContent);
+          const updatedDeleted = getDeletedIds().filter(id => id !== selectedFileName && id !== simId);
+          saveDeletedIds(updatedDeleted);
+
+          const list = getOwnerImportedList().filter(x => x.file !== selectedFileName);
+          list.push(newSim);
+          saveOwnerImportedList(list);
+
+          addSimModal.classList.remove('open');
+          selectedCategory = category;
+          await loadSimulatorsList();
+          showToast(`✓ تمت إضافة "${finalTitle}" ضمن تصنيف "${category}"!`);
+        } catch (err) {
+          alert('تعذر حفظ الملف (قد تكون الذاكرة ممتلئة).');
+        }
+      });
+
+      // --- Delete Simulator Handlers ---
+      function promptDeleteSimulator(sim) {
+        simTargetForDelete = sim;
+        deleteModalText.textContent = `هل أنت متأكد من حذف محاكي "${sim.title}"؟ يمكنك استعادة المحاكيات الأصلية في أي وقت من الإعدادات.`;
+        deleteConfirmModal.classList.add('open');
+      }
+
+      cancelDeleteBtn.addEventListener('click', () => {
+        simTargetForDelete = null;
+        deleteConfirmModal.classList.remove('open');
+      });
+
+      confirmDeleteBtn.addEventListener('click', async () => {
+        if (!simTargetForDelete) return;
+        const sim = simTargetForDelete;
+        const key = getSimKey(sim);
+
+        localStorage.removeItem(STORAGE_KEYS.HTML_PREFIX + sim.file);
+        const updatedOwnerList = getOwnerImportedList().filter(x => x.file !== sim.file && x.id !== sim.id);
+        saveOwnerImportedList(updatedOwnerList);
+
+        const deletedIds = getDeletedIds();
+        if (!deletedIds.includes(key)) deletedIds.push(key);
+        if (sim.file && !deletedIds.includes(sim.file)) deletedIds.push(sim.file);
+        saveDeletedIds(deletedIds);
+
+        simTargetForDelete = null;
+        deleteConfirmModal.classList.remove('open');
+        await loadSimulatorsList();
+        showToast(`🗑️ تم حذف "${sim.title}" من القائمة.`);
+      });
+
+      // --- Open / Close Full-Screen Simulator + Features 1, 3, 5 ---
+      function syncFloatingDoneBtn() {
+        if (!currentOpenSim) return;
+        const isDone = getCompletedSet().has(getSimKey(currentOpenSim));
+        floatingDoneBtn.classList.toggle('done-tool', isDone);
+        floatingDoneLabel.textContent = isDone ? 'مكتمل ✓' : 'تحديد كمكتمل';
+      }
+
+      function openSimulator(sim) {
+        isSimulatorOpen = true;
+        currentOpenSim = sim;
+        isLandscapeMode = false;
+        simulatorOverlay.classList.remove('css-landscape');
+        rotateBtnLabel.textContent = 'عرض أفقي';
+        notesDrawer.classList.remove('open');
+
+        history.pushState({ view: 'simulator', id: sim.id }, '');
+
+        const cachedHtml = localStorage.getItem(STORAGE_KEYS.HTML_PREFIX + sim.file);
+        if (cachedHtml) {
+          simulatorFrame.removeAttribute('src');
+          simulatorFrame.srcdoc = cachedHtml;
+        } else {
+          simulatorFrame.removeAttribute('srcdoc');
+          simulatorFrame.src = sim.file;
+        }
+
+        // Load saved clinical notes for this simulator
+        notesDrawerTitle.textContent = `📝 ملاحظاتي: ${sim.title}`;
+        simNotesTextarea.value = getSimNote(sim);
+        syncFloatingDoneBtn();
+
+        simulatorOverlay.classList.add('active');
+        simulatorOverlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeSimulator(fromPopState = false) {
+        if (!isSimulatorOpen) return;
+        isSimulatorOpen = false;
+        currentOpenSim = null;
+        notesDrawer.classList.remove('open');
+
+        // Reset orientation back to portrait/unspecified when returning to list
+        if (isLandscapeMode) {
+          setAppOrientation('unspecified');
+          simulatorOverlay.classList.remove('css-landscape');
+          isLandscapeMode = false;
+        }
+
+        simulatorOverlay.classList.remove('active');
+        simulatorOverlay.setAttribute('aria-hidden', 'true');
+        simulatorFrame.src = 'about:blank';
+        simulatorFrame.removeAttribute('srcdoc');
+
+        updateProgressUI();
+        renderCategoriesBar();
+        renderCards();
+
+        if (!fromPopState && history.state && history.state.view === 'simulator') {
+          history.back();
+        }
+      }
+
+      // Feature 5: Landscape / Portrait Screen Rotation Toggle
+      function setAppOrientation(mode) {
+        if (window.SynapseNative && typeof window.SynapseNative.setOrientation === 'function') {
+          window.SynapseNative.setOrientation(mode);
+          return true;
+        }
+        if (screen.orientation && typeof screen.orientation.lock === 'function') {
+          if (mode === 'landscape') {
+            screen.orientation.lock('landscape').catch(() => {
+              simulatorOverlay.classList.add('css-landscape');
+            });
+          } else {
+            screen.orientation.unlock();
+            simulatorOverlay.classList.remove('css-landscape');
+          }
+          return true;
+        }
+        return false;
+      }
+
+      floatingRotateBtn.addEventListener('click', () => {
+        isLandscapeMode = !isLandscapeMode;
+        floatingRotateBtn.classList.toggle('active-tool', isLandscapeMode);
+        rotateBtnLabel.textContent = isLandscapeMode ? 'عرض عمودي' : 'عرض أفقي';
+        const handledNatively = setAppOrientation(isLandscapeMode ? 'landscape' : 'portrait');
+        if (!handledNatively) {
+          simulatorOverlay.classList.toggle('css-landscape', isLandscapeMode);
+        }
+      });
+
+      // Feature 3: Clinical Notes Pad Inside Simulator
+      floatingNotesBtn.addEventListener('click', () => {
+        notesDrawer.classList.toggle('open');
+        floatingNotesBtn.classList.toggle('active-tool', notesDrawer.classList.contains('open'));
+      });
+
+      closeNotesDrawerBtn.addEventListener('click', () => {
+        notesDrawer.classList.remove('open');
+        floatingNotesBtn.classList.remove('active-tool');
+      });
+
+      simNotesTextarea.addEventListener('input', () => {
+        if (!currentOpenSim) return;
+        setSimNote(currentOpenSim, simNotesTextarea.value);
+      });
+
+      clearSimNoteBtn.addEventListener('click', () => {
+        if (!currentOpenSim) return;
+        simNotesTextarea.value = '';
+        setSimNote(currentOpenSim, '');
+      });
+
+      // Feature 1: Mark Completed directly inside Simulator
+      floatingDoneBtn.addEventListener('click', () => {
+        if (!currentOpenSim) return;
+        const key = getSimKey(currentOpenSim);
+        const set = getCompletedSet();
+        if (set.has(key)) set.delete(key); else set.add(key);
+        saveCompletedSet(set);
+        syncFloatingDoneBtn();
+      });
+
+      window.__medsimCloseActiveSimulator = function () {
+        if (isSimulatorOpen) {
+          closeSimulator(false);
+          return true;
+        }
+        return false;
+      };
+
+      window.addEventListener('popstate', () => {
+        if (isSimulatorOpen) {
+          closeSimulator(true);
+        }
+      });
+
+      floatingBackBtn.addEventListener('click', () => closeSimulator(false));
+
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.addListener('backButton', () => {
+          if (isSimulatorOpen) {
+            closeSimulator(false);
+          } else {
+            window.Capacitor.Plugins.App.exitApp();
+          }
+        });
+      }
+
+      // --- Settings & Restore Deleted/Edited Bundled Simulators ---
+      openSettingsModalBtn.addEventListener('click', () => {
+        remoteUrlInput.value = getConfiguredRemoteUrl();
+        settingsModal.classList.add('open');
+      });
+
+      closeSettingsBtn.addEventListener('click', () => {
+        settingsModal.classList.remove('open');
+      });
+
+      restoreDeletedBundledBtn.addEventListener('click', async () => {
+        saveDeletedIds([]);
+        saveMetaOverrides({});
+        settingsModal.classList.remove('open');
+        selectedCategory = 'all';
+        await loadSimulatorsList();
+        showToast('♻️ تمت استعادة جميع المحاكيات المدمجة لحالتها الأصلية بنجاح!');
+      });
+
+      saveSettingsBtn.addEventListener('click', () => {
+        const val = remoteUrlInput.value.trim();
+        if (val) {
+          localStorage.setItem(STORAGE_KEYS.REMOTE_URL, val);
+        }
+        settingsModal.classList.remove('open');
+        checkForUpdates(false);
+      });
+
+      // --- OTA Remote Update Check ---
+      function getConfiguredRemoteUrl() {
+        return localStorage.getItem(STORAGE_KEYS.REMOTE_URL) ||
+          (bundledManifest && bundledManifest.remoteConfigUrl) || '';
+      }
+
+      async function checkForUpdates(silent = true) {
+        if (!navigator.onLine) {
+          if (!silent) showToast('لا يوجد اتصال بالإنترنت حالياً. التطبيق يعمل بالوضع المحلي.');
+          return;
+        }
+
+        const remoteUrl = getConfiguredRemoteUrl();
+        if (!remoteUrl || remoteUrl.includes('YOUR-GITHUB-USERNAME')) {
+          if (!silent) showToast('تم حفظ الإعدادات.');
+          return;
+        }
+
+        try {
+          if (!silent) showToast('جارٍ التحقق من وجود محاكيات جديدة...');
+          const res = await fetch(remoteUrl, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const remoteData = await res.json();
+
+          if (!remoteData || !Array.isArray(remoteData.simulators)) {
+            throw new Error('صيغة ملف simulators.json غير صالحة');
+          }
+
+          const baseUrl = remoteUrl.substring(0, remoteUrl.lastIndexOf('/') + 1);
+          const currentMap = new Map(activeSimulators.map(s => [s.file, s]));
+
+          const newOrUpdated = remoteData.simulators.filter(remoteSim => {
+            const existing = currentMap.get(remoteSim.file);
+            if (!existing) return true;
+            if (remoteSim.version && existing.version && remoteSim.version !== existing.version) {
+              return true;
+            }
+            return false;
+          });
+
+          if (newOrUpdated.length > 0) {
+            pendingNewSimulators = newOrUpdated;
+            pendingRemoteManifest = remoteData.simulators;
+            pendingBaseUrl = baseUrl;
+
+            updateBtn.classList.add('visible', 'has-update');
+            updateBtnLabel.textContent = `تحديث (${newOrUpdated.length} جديد)`;
+            showToast(`تتوفر ${newOrUpdated.length} محاكيات جديدة! اضغط على زر التحديث الأحمر لتنزيلها.`);
+          } else {
+            updateBtn.classList.remove('has-update');
+            if (!silent) showToast('جميع المحاكيات محدّثة إلى آخر إصدار.');
+          }
+        } catch (err) {
+          if (!silent) showToast('تعذر الاتصال بخادم التحديث. تأكد من صحة الرابط.');
+        }
+      }
+
+      updateBtn.addEventListener('click', async () => {
+        if (pendingNewSimulators.length === 0) {
+          checkForUpdates(false);
+          return;
+        }
+
+        updateBtn.disabled = true;
+        updateBtnLabel.textContent = 'جارٍ التنزيل...';
+
+        let downloadedCount = 0;
+        for (const sim of pendingNewSimulators) {
+          try {
+            const fileUrl = new URL(sim.file, pendingBaseUrl).href;
+            const resp = await fetch(fileUrl, { cache: 'no-store' });
+            if (resp.ok) {
+              const htmlText = await resp.text();
+              localStorage.setItem(STORAGE_KEYS.HTML_PREFIX + sim.file, htmlText);
+              downloadedCount++;
+            }
+          } catch (e) {}
+        }
+
+        if (downloadedCount > 0 && pendingRemoteManifest) {
+          localStorage.setItem(STORAGE_KEYS.MANIFEST, JSON.stringify(pendingRemoteManifest));
+          await loadSimulatorsList();
+          pendingNewSimulators = [];
+          updateBtn.classList.remove('has-update', 'visible');
+          updateBtnLabel.textContent = 'تحديث';
+          showToast(`تم تنزيل وحفظ ${downloadedCount} محاكيات بنجاح للعمل بدون إنترنت!`);
+        } else {
+          updateBtnLabel.textContent = `إعادة المحاولة (${pendingNewSimulators.length})`;
+          showToast('تعذر تنزيل بعض الملفات. تحقق من اتصال الإنترنت.');
+        }
+
+        updateBtn.disabled = false;
+      });
+
+      window.addEventListener('online', () => checkForUpdates(true));
+
+      loadSimulatorsList().then(() => {
+        if (navigator.onLine) {
+          checkForUpdates(true);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

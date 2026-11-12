@@ -1,0 +1,88 @@
+{
+  "version": "1.1.0",
+  "remoteConfigUrl": "https://YOUR-GITHUB-USERNAME.github.io/medsim-updates/simulators.json",
+  "categories": [
+    {
+      "id": "all",
+      "title": "الكل",
+      "icon": "📚"
+    },
+    {
+      "id": "عمليات جراحية",
+      "title": "عمليات جراحية",
+      "icon": "🔪"
+    },
+    {
+      "id": "قصة سريرية وتشخيص",
+      "title": "قصة سريرية وتشخيص",
+      "icon": "🩺"
+    },
+    {
+      "id": "طوارئ وإنعاش",
+      "title": "طوارئ وإنعاش",
+      "icon": "🚨"
+    },
+    {
+      "id": "نسائية وتوليد",
+      "title": "نسائية وتوليد",
+      "icon": "👶"
+    },
+    {
+      "id": "مهارات وإجراءات سريرية",
+      "title": "مهارات وإجراءات سريرية",
+      "icon": "💉"
+    },
+    {
+      "id": "تشريح وفيزيولوجيا 3D",
+      "title": "تشريح وفيزيولوجيا 3D",
+      "icon": "🧊"
+    }
+  ],
+  "simulators": [
+    {
+      "id": "clinical-sim",
+      "title": "حالة سريرية: ألم بطني حاد",
+      "description": "تقييم سريري تفاعلي لمريض يعاني من ألم في الربع السفلي الأيمن للبطن مع القصة المرضية والفحص السريري والتحاليل.",
+      "icon": "🩺",
+      "file": "clinical-sim.html",
+      "version": "1.0.0",
+      "category": "قصة سريرية وتشخيص"
+    },
+    {
+      "id": "appendectomy-sim",
+      "title": "استئصال الزائدة الدودية (خطوة بخطوة - 2D)",
+      "description": "محاكاة جراحية ثنائية الأبعاد لخطوات استئصال الزائدة الدودية من شق ماكبيرني حتى إغلاق الطبقات.",
+      "icon": "🔪",
+      "file": "appendectomy-sim.html",
+      "version": "1.0.0",
+      "category": "عمليات جراحية"
+    },
+    {
+      "id": "appendectomy-3d",
+      "title": "استئصال الزائدة الدودية بالمنظار (3D)",
+      "description": "محاكاة ثلاثية الأبعاد تفاعلية (Three.js r128) لتشريح الزائدة الدودية وربط الشريان الزائدي واستئصالها.",
+      "icon": "🧊",
+      "file": "appendectomy-3d.html",
+      "version": "1.0.0",
+      "category": "عمليات جراحية"
+    },
+    {
+      "id": "normal-delivery-sim",
+      "title": "الولادة الطبيعية المهبلية (2D)",
+      "description": "محاكاة تفاعلية لمراحل المخاض والحركات الأصلية للجنين (Cardinal Movements) وتدبير الولادة الطبيعية.",
+      "icon": "👶",
+      "file": "normal-delivery-sim.html",
+      "version": "1.0.0",
+      "category": "نسائية وتوليد"
+    },
+    {
+      "id": "pneumothorax-sim",
+      "title": "استرواح الصدر الضاغط وتفجير الصدر (2D)",
+      "description": "التشخيص الفوري لاسترواح الصدر الضاغط وإجراء تخفيف الضغط بالإبرة متبوعاً بتركيب مفجر الصدر.",
+      "icon": "🫁",
+      "file": "pneumothorax-sim.html",
+      "version": "1.0.0",
+      "category": "طوارئ وإنعاش"
+    }
+  ]
+}

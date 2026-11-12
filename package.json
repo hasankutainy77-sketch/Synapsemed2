@@ -1,0 +1,21 @@
+{
+  "name": "synapsemed",
+  "version": "1.0.0",
+  "description": "synapsemed - Offline Medical Simulators Android App",
+  "private": true,
+  "scripts": {
+    "prepare-offline": "node scripts/bundle-offline-assets.mjs",
+    "sync": "npx cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/splash-screen": "^6.0.2",
+    "three": "0.128.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^6.1.2"
+  }
+}
