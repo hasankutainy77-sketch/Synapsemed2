@@ -88,4 +88,3 @@ public class MainActivity extends BridgeActivity {
   fs.writeFileSync(mainActivityPath, customMainActivity, 'utf8');
   console.log('[Android Config] Configured hardware back button & orientation bridge in MainActivity.java');
 }
-`;
