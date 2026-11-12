@@ -34,18 +34,26 @@ jobs:
 
       - name: 6. Create & Sync Capacitor Android Platform
         run: |
-        mkdir -p www
+          # 1. إنشاء مجلد www وملف index.html مؤقت لحل مشكلة الأصول
+          mkdir -p www
           echo "<!DOCTYPE html><html><head><title>SynapseMed</title></head><body></body></html>" > www/index.html
-          mkdir -p android/app/src/main/assets
-          touch android/app/src/main/assets/capacitor.plugins.json
+          
+          # 2. إنشاء منصة أندرويد إذا لم تكن موجودة
           if [ ! -d "android" ]; then
             npx cap add android
           fi
+          
+          # 3. إنشاء ملف capacitor.plugins.json الفارغ لتجنب خطأ ENOENT
+          mkdir -p android/app/src/main/assets
+          touch android/app/src/main/assets/capacitor.plugins.json
+          
+          # 4. مزامنة الأصول
           npx cap sync android
           npx @capacitor/assets generate --android
 
       - name: 7. Patch Android Back Button & App Name & Fullscreen Theme
         run: |
+          # تم إزالة كلمة scripts/ لأن الملف موجود في المجلد الرئيسي
           node configure-android-native.mjs
 
       - name: 8. Build Installable APK (Gradle assembleDebug)
